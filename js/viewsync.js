@@ -70,27 +70,16 @@ function viewsync_init() {
         bbox = timelapse.getBoundingBoxForCurrentView();
       }
 
-      // var xoffset = (xmax - xmin) * yawOffset;
-      // var yoffset = (ymax - ymin) * pitchOffset;
-
-      // bbox.xmin -= xoffset;
-      // bbox.xmax -= xoffset;
-      // bbox.ymin -= yoffset;
-      // bbox.ymax -= yoffset;
 
       if (fields.showMap || fields.showControls)
         timelapse.updateLocationContextUI();
-      // if (e.x == view.x && e.y == view.y && e.scale == view.scale) {
       if (broadcast) {
         viewsync.emit('view', {
           "bbox": bbox,
           "view": view,
           "id": id
         });
-        // previousSentData = _.clone(bbox);
       }
-      // }
-
 
     });
 
@@ -141,32 +130,7 @@ function viewsync_init() {
     timelapse.addViewChangeListener(function(e, broadcast) {
 
       var bbox = timelapse.getBoundingBoxForCurrentView();
-      // var xmax = timelapse.getPanoWidth();
-      // var xmin = 0;
-      // var ymax = timelapse.getPanoHeight();
-      // var ymin = 0;
-      // var xyExtents = false;
-
-      // if (view.x < xmin) {
-      //   view.x = xmin;
-      //   xyExtents = true;
-      // } else if (view.x > xmax) {
-      //   view.x = xmax;
-      //   xyExtents = true;
-      // }
-      // if (view.y < ymin) {
-      //   view.y = ymin;
-      //   xyExtents = true;
-      // } else if (view.y > ymax) {
-      //   view.y = ymax;
-      //   xyExtents = true;
-      // }
-
-      // if (xyExtents) {
-      //   timelapse.warpTo(view);
-      //   bbox = timelapse.getBoundingBoxForCurrentView();
-      // }
-
+  
       var xoffset = (bbox.xmax - bbox.xmin) * yawOffset;
       var yoffset = (bbox.ymax - bbox.ymin) * pitchOffset;
 
@@ -176,7 +140,6 @@ function viewsync_init() {
       bbox.ymax -= yoffset;
       if (fields.showMap || fields.showControls)
         timelapse.updateLocationContextUI();
-      // if (e.x == view.x && e.y == view.y && e.scale == view.scale) {
       if (broadcast) {
         viewsync.emit('masterview', {
           "bbox": bbox,
@@ -184,7 +147,6 @@ function viewsync_init() {
           "id": id
         });
       }
-      // }
 
 
     });

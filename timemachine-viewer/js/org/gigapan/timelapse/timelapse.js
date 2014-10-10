@@ -55,7 +55,7 @@ var timelapseMetadata;
 if (!org) {
   org = {};
 } else {
-  if ( typeof org != "object") {
+  if (typeof org != "object") {
     var orgExistsMessage = "Error: failed to create org namespace: org already exists and is not an object";
     alert(orgExistsMessage);
     throw new Error(orgExistsMessage);
@@ -66,7 +66,7 @@ if (!org) {
 if (!org.gigapan) {
   org.gigapan = {};
 } else {
-  if ( typeof org.gigapan != "object") {
+  if (typeof org.gigapan != "object") {
     var orgGigapanExistsMessage = "Error: failed to create org.gigapan namespace: org.gigapan already exists and is not an object";
     alert(orgGigapanExistsMessage);
     throw new Error(orgGigapanExistsMessage);
@@ -77,7 +77,7 @@ if (!org.gigapan) {
 if (!org.gigapan.timelapse) {
   org.gigapan.timelapse = {};
 } else {
-  if ( typeof org.gigapan.timelapse != "object") {
+  if (typeof org.gigapan.timelapse != "object") {
     var orgGigapanTimelapseExistsMessage = "Error: failed to create org.gigapan.timelapse namespace: org.gigapan.timelapse already exists and is not an object";
     alert(orgGigapanTimelapseExistsMessage);
     throw new Error(orgGigapanTimelapseExistsMessage);
@@ -126,18 +126,18 @@ if (!window['$']) {
     var initialTime = settings["initialTime"] && UTIL.isNumber(settings["initialTime"]) ? settings["initialTime"] : 0;
     var initialView = settings["initialView"] || null;
     // deprecated
-    var doChromeSeekableHack = ( typeof (settings["doChromeSeekableHack"]) == "undefined") ? true : settings["doChromeSeekableHack"];
+    var doChromeSeekableHack = (typeof(settings["doChromeSeekableHack"]) == "undefined") ? true : settings["doChromeSeekableHack"];
     // deprecated
-    var doChromeBufferedHack = ( typeof (settings["doChromeBufferedHack"]) == "undefined") ? true : settings["doChromeBufferedHack"];
-    var doChromeCacheBreaker = ( typeof (settings["doChromeCacheBreaker"]) == "undefined") ? true : settings["doChromeCacheBreaker"];
-    var loopDwell = ( typeof (settings["loopDwell"]) == "undefined" || typeof (settings["loopDwell"]["startDwell"]) == "undefined" || typeof (settings["loopDwell"]["endDwell"]) == "undefined") ? null : settings["loopDwell"];
-    var startDwell = (!loopDwell || typeof (settings["loopDwell"]["startDwell"]) == "undefined") ? 0 : settings["loopDwell"]["startDwell"];
-    var endDwell = (!loopDwell || typeof (settings["loopDwell"]["endDwell"]) == "undefined") ? 0 : settings["loopDwell"]["endDwell"];
-    var blackFrameDetection = ( typeof (settings["blackFrameDetection"]) == "undefined") ? false : settings["blackFrameDetection"];
-    var skippedFramesAtEnd = ( typeof (settings["skippedFramesAtEnd"]) == "undefined" || settings["skippedFramesAtEnd"] < 0) ? 0 : settings["skippedFramesAtEnd"];
-    var skippedFramesAtStart = ( typeof (settings["skippedFramesAtStart"]) == "undefined" || settings["skippedFramesAtStart"] < 0) ? 0 : settings["skippedFramesAtStart"];
+    var doChromeBufferedHack = (typeof(settings["doChromeBufferedHack"]) == "undefined") ? true : settings["doChromeBufferedHack"];
+    var doChromeCacheBreaker = (typeof(settings["doChromeCacheBreaker"]) == "undefined") ? true : settings["doChromeCacheBreaker"];
+    var loopDwell = (typeof(settings["loopDwell"]) == "undefined" || typeof(settings["loopDwell"]["startDwell"]) == "undefined" || typeof(settings["loopDwell"]["endDwell"]) == "undefined") ? null : settings["loopDwell"];
+    var startDwell = (!loopDwell || typeof(settings["loopDwell"]["startDwell"]) == "undefined") ? 0 : settings["loopDwell"]["startDwell"];
+    var endDwell = (!loopDwell || typeof(settings["loopDwell"]["endDwell"]) == "undefined") ? 0 : settings["loopDwell"]["endDwell"];
+    var blackFrameDetection = (typeof(settings["blackFrameDetection"]) == "undefined") ? false : settings["blackFrameDetection"];
+    var skippedFramesAtEnd = (typeof(settings["skippedFramesAtEnd"]) == "undefined" || settings["skippedFramesAtEnd"] < 0) ? 0 : settings["skippedFramesAtEnd"];
+    var skippedFramesAtStart = (typeof(settings["skippedFramesAtStart"]) == "undefined" || settings["skippedFramesAtStart"] < 0) ? 0 : settings["skippedFramesAtStart"];
     var enableMetadataCacheBreaker = settings["enableMetadataCacheBreaker"] || false;
-    var enableContextMapOnDefaultUI = ( typeof (settings["enableContextMapOnDefaultUI"]) == "undefined") ? false : settings["enableContextMapOnDefaultUI"];
+    var enableContextMapOnDefaultUI = (typeof(settings["enableContextMapOnDefaultUI"]) == "undefined") ? false : settings["enableContextMapOnDefaultUI"];
     var datasetType = settings["datasetType"];
     var useCustomUI = (settings["datasetType"] == "landsat" || settings["datasetType"] == "modis");
     var visualizerGeometry = {
@@ -153,9 +153,9 @@ if (!window['$']) {
     // Otherwise, we will still handle tours but no editor will be displayed.
     // (No thumbnails for keyframes pulled and loading a tour will display a load
     // button with the tour name on the center of the viewport.)
-    var editorEnabled = ( typeof (settings["enableEditor"]) == "undefined") ? false : settings["enableEditor"];
-    var presentationSliderEnabled = ( typeof (settings["enablePresentationSlider"]) == "undefined") ? false : settings["enablePresentationSlider"];
-    var annotatorEnabled = ( typeof (settings["enableAnnotator"]) == "undefined") ? false : settings["enableAnnotator"];
+    var editorEnabled = (typeof(settings["enableEditor"]) == "undefined") ? false : settings["enableEditor"];
+    var presentationSliderEnabled = (typeof(settings["enablePresentationSlider"]) == "undefined") ? false : settings["enablePresentationSlider"];
+    var annotatorEnabled = (typeof(settings["enableAnnotator"]) == "undefined") ? false : settings["enableAnnotator"];
 
     // Objects
     var videoset;
@@ -585,7 +585,7 @@ if (!window['$']) {
         return;
       var bboxViewNE = bboxView.bbox.ne;
       var bboxViewSW = bboxView.bbox.sw;
-      if (( typeof (tmJSON['projection-bounds']) !== 'undefined') && bboxViewNE && bboxViewSW && UTIL.isNumber(bboxViewNE.lat) && UTIL.isNumber(bboxViewNE.lng) && UTIL.isNumber(bboxViewSW.lat) && UTIL.isNumber(bboxViewSW.lng)) {
+      if ((typeof(tmJSON['projection-bounds']) !== 'undefined') && bboxViewNE && bboxViewSW && UTIL.isNumber(bboxViewNE.lat) && UTIL.isNumber(bboxViewNE.lng) && UTIL.isNumber(bboxViewSW.lat) && UTIL.isNumber(bboxViewSW.lng)) {
         newView = latLngBoundingBoxToPixelCenter(bboxView);
       } else if (UTIL.isNumber(bboxView.bbox.xmin) && UTIL.isNumber(bboxView.bbox.xmax) && UTIL.isNumber(bboxView.bbox.ymin) && UTIL.isNumber(bboxView.bbox.ymax)) {
         newView = pixelBoundingBoxToPixelCenter(bboxView);
@@ -622,7 +622,7 @@ if (!window['$']) {
             setTargetView(targetView);
           };
           break;
-        // Right arrow
+          // Right arrow
         case 39:
           if ($(activeElement).hasClass("timeTickClickRegion")) {
             if (customUI) {
@@ -641,7 +641,7 @@ if (!window['$']) {
             setTargetView(targetView);
           };
           break;
-        // Up arrow
+          // Up arrow
         case 38:
           moveFn = function() {
             if (event.shiftKey) {
@@ -652,7 +652,7 @@ if (!window['$']) {
             setTargetView(targetView);
           };
           break;
-        // Down arrow
+          // Down arrow
         case 40:
           moveFn = function() {
             if (event.shiftKey) {
@@ -663,7 +663,7 @@ if (!window['$']) {
             setTargetView(targetView);
           };
           break;
-        // Minus
+          // Minus
         case 173:
         case 109:
         case 189:
@@ -676,7 +676,7 @@ if (!window['$']) {
             setTargetView(targetView);
           };
           break;
-        // Plus
+          // Plus
         case 61:
         case 107:
         case 187:
@@ -689,7 +689,7 @@ if (!window['$']) {
             setTargetView(targetView);
           };
           break;
-        // P
+          // P
         case 80:
           thisObj.handlePlayPause();
           break;
@@ -732,8 +732,8 @@ if (!window['$']) {
     };
     this.handleMousescrollEvent = handleMousescrollEvent;
 
-    var _warpTo = function(newView) {
-      setTargetView(newView);
+    var _warpTo = function(newView, broadcast) {
+      setTargetView(newView, null, broadcast);
       view.x = targetView.x;
       view.y = targetView.y;
       view.scale = targetView.scale;
@@ -768,8 +768,8 @@ if (!window['$']) {
         return bboxView.bbox;
     };
 
-    this.warpToBoundingBox = function(bbox) {
-      this.warpTo(pixelBoundingBoxToPixelCenter(bbox));
+    this.warpToBoundingBox = function(bbox, broadcast) {
+      this.warpTo(pixelBoundingBoxToPixelCenter(bbox), broadcast);
     };
 
     this.resetPerf = function() {
@@ -861,7 +861,7 @@ if (!window['$']) {
     this.addPlaybackRateChangeListener = _addPlaybackRateChangeListener;
 
     var _getProjection = function(desiredProjectionType) {
-      projectionType = typeof (desiredProjectionType) != 'undefined' ? desiredProjectionType : "mercator";
+      projectionType = typeof(desiredProjectionType) != 'undefined' ? desiredProjectionType : "mercator";
       if (projectionType == "mercator") {
         var projectionBounds = tmJSON['projection-bounds'];
         return new org.gigapan.timelapse.MercatorProjection(projectionBounds.west, projectionBounds.north, projectionBounds.east, projectionBounds.south, panoWidth, panoHeight);
@@ -885,7 +885,7 @@ if (!window['$']) {
 
     var _getViewStr = function() {
       // TODO: let the user choose lat/lng or points for a dataset with projection info
-      if ( typeof (tmJSON['projection-bounds']) != 'undefined') {
+      if (typeof(tmJSON['projection-bounds']) != 'undefined') {
         return getViewStrAsProjection();
       } else {
         return getViewStrAsPoints();
@@ -894,7 +894,7 @@ if (!window['$']) {
     this.getViewStr = _getViewStr;
 
     var _setNewView = function(newView, doWarp, doPlay, callBack) {
-      if ( typeof (newView) === 'undefined' || newView == null)
+      if (typeof(newView) === 'undefined' || newView == null)
         return;
 
       newView = _normalizeView(newView);
@@ -904,7 +904,7 @@ if (!window['$']) {
         parabolicMotionController = null;
         if (doPlay)
           thisObj.handlePlayPause();
-        if ( typeof (callBack) === "function")
+        if (typeof(callBack) === "function")
           callBack();
       };
 
@@ -939,20 +939,20 @@ if (!window['$']) {
     var _normalizeView = function(newView) {
       if (!newView) return null;
 
-      if (newView.center) {// Center view
+      if (newView.center) { // Center view
         var newCenterView = newView.center;
-        if (( typeof (tmJSON['projection-bounds']) !== 'undefined') && UTIL.isNumber(newCenterView.lat) && UTIL.isNumber(newCenterView.lng) && UTIL.isNumber(newView.zoom)) {
+        if ((typeof(tmJSON['projection-bounds']) !== 'undefined') && UTIL.isNumber(newCenterView.lat) && UTIL.isNumber(newCenterView.lng) && UTIL.isNumber(newView.zoom)) {
           newView = latLngCenterViewToPixelCenter(newView);
         } else if (UTIL.isNumber(newCenterView.x) && UTIL.isNumber(newCenterView.y) && UTIL.isNumber(newView.zoom)) {
           newView = pixelCenterViewToPixelCenter(newView);
         } else {
           newView = view;
         }
-      } else if (newView.bbox) {// Bounding box view
+      } else if (newView.bbox) { // Bounding box view
         var newViewBbox = newView.bbox;
         var newViewBboxNE = newViewBbox.ne;
         var newViewBboxSW = newViewBbox.sw;
-        if (( typeof (tmJSON['projection-bounds']) !== 'undefined') && newViewBboxNE && newViewBboxSW && UTIL.isNumber(newViewBboxNE.lat) && UTIL.isNumber(newViewBboxNE.lng) && UTIL.isNumber(newViewBboxSW.lat) && UTIL.isNumber(newViewBboxSW.lng)) {
+        if ((typeof(tmJSON['projection-bounds']) !== 'undefined') && newViewBboxNE && newViewBboxSW && UTIL.isNumber(newViewBboxNE.lat) && UTIL.isNumber(newViewBboxNE.lng) && UTIL.isNumber(newViewBboxSW.lat) && UTIL.isNumber(newViewBboxSW.lng)) {
           newView = latLngBoundingBoxToPixelCenter(newView);
         } else if (UTIL.isNumber(newViewBbox.xmin) && UTIL.isNumber(newViewBbox.xmax) && UTIL.isNumber(newViewBbox.ymin) && UTIL.isNumber(newViewBbox.ymax)) {
           newView = pixelBoundingBoxToPixelCenter(newView);
@@ -1005,7 +1005,7 @@ if (!window['$']) {
             if (key == "ne" || key == "sw") {
               isLatLng = true;
               for (var innerKey in bboxView[key])
-              tmpViewParam.push(bboxView[key][innerKey]);
+                tmpViewParam.push(bboxView[key][innerKey]);
             } else {
               tmpViewParam.push(bboxView[key]);
             }
@@ -1043,7 +1043,7 @@ if (!window['$']) {
               }
             }
           };
-      } else {// Assume points if the user did not specify latLng. Also allow for the omission of 'pts' param for backwards compatibility
+      } else { // Assume points if the user did not specify latLng. Also allow for the omission of 'pts' param for backwards compatibility
         if ((unsafe_viewParam.indexOf("pts") == -1 && unsafe_viewParam.length == 3) || unsafe_viewParam.length == 4)
           view = {
             center: {
@@ -1477,10 +1477,10 @@ if (!window['$']) {
       // special scaling (because it'll blow up with f(1) being NaN since we'd be dividing zero by zero).
       var f_of_t = (Math.abs(s1_over_s0 - 1) < 0.000001) ? timeRatio : (Math.pow(s1_over_s0, timeRatio) - 1) / (s1_over_s0 - 1);
 
-      var boundsXminOffset = (end.xmin - start.xmin ) * f_of_t;
-      var boundsYminOffset = (end.ymin - start.ymin ) * f_of_t;
-      var boundsXmaxOffset = (end.xmax - start.xmax ) * f_of_t;
-      var boundsYmaxOffset = (end.ymax - start.ymax ) * f_of_t;
+      var boundsXminOffset = (end.xmin - start.xmin) * f_of_t;
+      var boundsYminOffset = (end.ymin - start.ymin) * f_of_t;
+      var boundsXmaxOffset = (end.xmax - start.xmax) * f_of_t;
+      var boundsYmaxOffset = (end.ymax - start.ymax) * f_of_t;
 
       var bounds = {};
       bounds.xmin = start.xmin + boundsXminOffset;
@@ -1606,7 +1606,7 @@ if (!window['$']) {
             targetView.x += (lastEvent.pageX - event.pageX) / view.scale;
             targetView.y += (lastEvent.pageY - event.pageY) / view.scale;
           }
-          setTargetView(targetView);
+          setTargetView(targetView,null, mouseIsDown);
           lastEvent = event;
         }
         return false;
@@ -1658,7 +1658,7 @@ if (!window['$']) {
       return "[view x:" + view.x + " y:" + view.y + " scale:" + view.scale + "]";
     };
 
-    var setTargetView = function(newView, offset) {
+    var setTargetView = function(newView, offset, broadcast) {
       if (newView) {
         var tempView = {};
         tempView.scale = limitScale(newView.scale);
@@ -1683,15 +1683,16 @@ if (!window['$']) {
       // ~35Hz or 12.5Hz
       if (animateInterval == null) {
         animateInterval = setInterval(function() {
-          animate();
+          animate(broadcast);
         }, animateRate);
         lastAnimationTime = UTIL.getCurrentTimeInSecs();
       }
 
       refresh();
-
-      for (var i = 0; i < targetViewChangeListeners.length; i++)
-        targetViewChangeListeners[i](targetView);
+      if (true) {
+        for (var i = 0; i < targetViewChangeListeners.length; i++)
+          targetViewChangeListeners[i](targetView,broadcast);
+      }
     };
     this.setTargetView = setTargetView;
 
@@ -1800,7 +1801,7 @@ if (!window['$']) {
       return true;
     };
 
-    var animate = function() {
+    var animate = function(broadcast) {
       //var isJoystickWorking = checkForJoystick();
 
       // Compute deltaT between this animation frame and last
@@ -1846,7 +1847,7 @@ if (!window['$']) {
       refresh();
       // Run listeners as the view changes
       for (var i = 0; i < viewChangeListeners.length; i++)
-        viewChangeListeners[i](view);
+        viewChangeListeners[i](view,broadcast);
     };
 
     //// Views with scale ////
@@ -1857,7 +1858,7 @@ if (!window['$']) {
         return null;
 
       // If input happens to be of the form {bbox:{xmin, xmax, ymin, ymax}}
-      if ( typeof (bbox.bbox) !== 'undefined')
+      if (typeof(bbox.bbox) !== 'undefined')
         bbox = bbox.bbox;
 
       var scale = Math.min(viewportWidth / (bbox.xmax - bbox.xmin), viewportHeight / (bbox.ymax - bbox.ymin));
@@ -1876,7 +1877,7 @@ if (!window['$']) {
         return null;
 
       // If input happens to be of the form {bbox:{...}}
-      if ( typeof (bbox.bbox) !== 'undefined')
+      if (typeof(bbox.bbox) !== 'undefined')
         bbox = bbox.bbox;
 
       var projection = _getProjection();
@@ -2159,8 +2160,8 @@ if (!window['$']) {
           if (visualizer) {
             visualizer.setMap(desiredBound);
           }
-        }// End of if (visualizer || smallGoogleMap)
-      }// End of if (visualizer || smallGoogleMap || scaleBar)
+        } // End of if (visualizer || smallGoogleMap)
+      } // End of if (visualizer || smallGoogleMap || scaleBar)
     };
     this.updateLocationContextUI = updateLocationContextUI;
 
@@ -2365,7 +2366,7 @@ if (!window['$']) {
     }
 
     function getMetadataCacheBreaker() {
-      return ( enableMetadataCacheBreaker ? ("?" + new Date().getTime()) : "");
+      return (enableMetadataCacheBreaker ? ("?" + new Date().getTime()) : "");
     }
 
     var handleLeavePageWithEditor = function() {
@@ -2567,13 +2568,13 @@ if (!window['$']) {
             loadSharedDataFromUnsafeURL(UTIL.getUnsafeHashString());
             didFirstTimeOnLoad = true;
             // Fire onTimeMachinePlayerReady the first time the page is loaded.
-            if ( typeof (settings["onTimeMachinePlayerReady"]) === "function") {
+            if (typeof(settings["onTimeMachinePlayerReady"]) === "function") {
               settings["onTimeMachinePlayerReady"](timeMachineDivId);
             }
           }
           loadTimelapseWithPreviousViewAndTime = false;
           hideSpinner(viewerDivId);
-          if ( typeof onNewTimelapseLoadCompleteCallBack === "function")
+          if (typeof onNewTimelapseLoadCompleteCallBack === "function")
             onNewTimelapseLoadCompleteCallBack();
         }
       });
@@ -2650,7 +2651,7 @@ if (!window['$']) {
         settings["url"] += "/";
 
       // If the user specifies a starting view, use it.
-      if (desiredView && typeof (desiredView) === "object") {
+      if (desiredView && typeof(desiredView) === "object") {
         initialView = desiredView;
       } else {
         initialView = null;
@@ -2658,7 +2659,7 @@ if (!window['$']) {
       settings["initialView"] = initialView;
 
       // If the user specifies a starting time, use it.
-      if (desiredTime && typeof (desiredTime) === "number") {
+      if (desiredTime && typeof(desiredTime) === "number") {
         initialTime = desiredTime;
         settings["initialTime"] = initialTime;
       } else {
@@ -2699,7 +2700,9 @@ if (!window['$']) {
 
     // Assumes dates are being used as capture times.
     var findExactOrClosestCaptureTime = function(timeToFind) {
-      var low = 0, high = captureTimes.length - 1, i, comparison;
+      var low = 0,
+        high = captureTimes.length - 1,
+        i, comparison;
       while (low <= high) {
         i = Math.floor((low + high) / 2);
         if (captureTimes[i].length < 11)

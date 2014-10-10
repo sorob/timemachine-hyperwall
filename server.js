@@ -63,6 +63,7 @@ var viewsync = io.of('/viewsync').on('connection', function(socket) {
   bounce(socket, 'view', 'viewsync');
   bounce(socket, 'time', 'viewsync');
   bounce(socket, 'play', 'viewsync');
+  bounce(socket, 'masterview', 'viewsync');
 });
 
 //

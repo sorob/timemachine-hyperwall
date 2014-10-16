@@ -188,21 +188,21 @@ function viewsync_init() {
 
   //setting borders - only works if there is a 2x2 array of displays ! does the job for now
   var p = location.port;
-  if (p=="")p=0;
+  if (p == "") p = 0;
 
   var colors = ["#008744", "#0057e7", "#d62d20", "#ffa700", "#eeeeee"];
   var color = colors[p % 5];
   var style = "3px solid " + color;
   var tiledContentHolder = $(".tiledContentHolder");
-  switch (yawOffset) {
+  switch (parseInt(yawOffset)) {
     case 0:
       tiledContentHolder.css("border-left", style)
       break;
     case 1:
       tiledContentHolder.css("border-right", style)
-      break;
+      break ;
   }
-    switch (pitchOffset) {
+  switch (parseInt(pitchOffset)) {
     case 0:
       tiledContentHolder.css("border-bottom", style)
       break;

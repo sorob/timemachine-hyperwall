@@ -1500,7 +1500,6 @@ if (!window['$']) {
     // Handle any hash variables related to time machines
     var handleHashChange = function() {
       var unsafeHashString = UTIL.getUnsafeHashString();
-
       // Share views
       loadSharedViewFromUnsafeURL(unsafeHashString);
       // Tours and presentations

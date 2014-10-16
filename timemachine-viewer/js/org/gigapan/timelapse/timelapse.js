@@ -1584,43 +1584,51 @@ if (!window['$']) {
       }
       return null;
     };
+    var onmove = function(event) {
 
+      if (event.touches.length == 1) {
+        //if (videoset.isStalled()) return;
+        // This is for the tile content holder
+        if (lastEvent) {
+          if (event.shiftKey && false) {
+            targetView.x += (lastEvent.touches[0].pageX - event.touches[0].pageX) * 0.2 / view.scale;
+            targetView.y += (lastEvent.touches[0].pageY - event.touches[0].pageY) * 0.2 / view.scale;
+          } else {
+            targetView.x += (lastEvent.touches[0].pageX - event.touches[0].pageX) / view.scale;
+            targetView.y += (lastEvent.touches[0].pageY - event.touches[0].pageY) / view.scale;
+          }
+        }
+        setTargetView(targetView, null, mouseIsDown);
+        lastEvent = event;
+      }
+      return false;
+    };
+    var mouseIsDown = false;
+    var lastEvent = null;
     var handleMousedownEvent = function(event) {
-      if (event.which != 1 || (annotator && (event.metaKey || event.ctrlKey || event.altKey || annotator.getCanMoveAnnotation())))
+      if ((event.which != 1 && event.type != "touchstart") || (annotator && (event.metaKey || event.ctrlKey || event.altKey || annotator.getCanMoveAnnotation())))
         return;
-      var mouseIsDown = true;
-      var lastEvent = event;
       var saveMouseMove = document.onmousemove;
       var saveMouseUp = document.onmouseup;
       $(videoDiv).removeClass("openHand closedHand").addClass('closedHand');
       stopParabolicMotion();
-      document.onmousemove = function(event) {
-        if (mouseIsDown) {
-          //if (videoset.isStalled()) return;
-          // This is for the tile content holder
-          if (event.shiftKey) {
-            targetView.x += (lastEvent.pageX - event.pageX) * 0.2 / view.scale;
-            targetView.y += (lastEvent.pageY - event.pageY) * 0.2 / view.scale;
-          } else {
-            targetView.x += (lastEvent.pageX - event.pageX) / view.scale;
-            targetView.y += (lastEvent.pageY - event.pageY) / view.scale;
-          }
-          setTargetView(targetView,null, mouseIsDown);
-          lastEvent = event;
-        }
-        return false;
-      };
+      mouseIsDown = true;
+      //document.ontouchmove = document.onmousemove = 
+
       // Make sure we release mousedown upon exiting our viewport if we are inside an iframe
-      $("body").one("mouseleave", function(event) {
+      $("body").one("mouseleave touchleave", function(event) {
         if (window && (window.self !== window.top)) {
           mouseIsDown = false;
           $(videoDiv).removeClass("openHand closedHand");
+          //document.removeEventListener("touchmove", onmove);
+          lastEvent = null;
           document.onmousemove = saveMouseMove;
           document.onmouseup = saveMouseUp;
         }
       });
       // Release mousedown upon mouseup
-      $(document).one("mouseup", function(event) {
+      $(document).one("mouseup touchend", function(event) {
+        lastEvent = null;
         mouseIsDown = false;
         $(videoDiv).removeClass("openHand closedHand");
         document.onmousemove = saveMouseMove;
@@ -1629,7 +1637,7 @@ if (!window['$']) {
       return false;
     };
     this.handleMousedownEvent = handleMousedownEvent;
-
+    document.addEventListener("touchmove", onmove);
     var zoomAbout = function(zoom, x, y, isFromGoogleMap) {
       //if (videoset.isStalled()) return;
       var newScale = limitScale(targetView.scale * zoom);
@@ -1645,7 +1653,7 @@ if (!window['$']) {
     this.zoomAbout = zoomAbout;
 
     var handleDoubleClickEvent = function(event, isFromGoogleMap) {
-      zoomAbout(2.0, event.pageX, event.pageY, isFromGoogleMap);
+      zoomAbout(2.0, event.touches[0].pageX, event.touches[0].pageY, isFromGoogleMap);
     };
 
     var limitScale = function(scale) {
@@ -1690,7 +1698,7 @@ if (!window['$']) {
       refresh();
       if (true) {
         for (var i = 0; i < targetViewChangeListeners.length; i++)
-          targetViewChangeListeners[i](targetView,broadcast);
+          targetViewChangeListeners[i](targetView, broadcast);
       }
     };
     this.setTargetView = setTargetView;
@@ -1846,7 +1854,7 @@ if (!window['$']) {
       refresh();
       // Run listeners as the view changes
       for (var i = 0; i < viewChangeListeners.length; i++)
-        viewChangeListeners[i](view,broadcast);
+        viewChangeListeners[i](view, broadcast);
     };
 
     //// Views with scale ////
@@ -2800,7 +2808,9 @@ if (!window['$']) {
       }
 
       // Setup viewport event handlers.
-      videoDiv['onmousedown'] = handleMousedownEvent;
+      //videoDivId['onmousedown'] = handleMousedownEvent;
+      videoDiv.addEventListener("touchstart", handleMousedownEvent);
+
       videoDiv['ondblclick'] = handleDoubleClickEvent;
 
       $(videoDiv).mousewheel(thisObj.handleMousescrollEvent);

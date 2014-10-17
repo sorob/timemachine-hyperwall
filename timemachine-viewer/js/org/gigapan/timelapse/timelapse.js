@@ -140,6 +140,7 @@ if (!window['$']) {
     var enableContextMapOnDefaultUI = (typeof(settings["enableContextMapOnDefaultUI"]) == "undefined") ? false : settings["enableContextMapOnDefaultUI"];
     var datasetType = settings["datasetType"];
     var useCustomUI = (settings["datasetType"] == "landsat" || settings["datasetType"] == "modis");
+    var useTouchFriendlyUI = (typeof(settings["useTouchFriendlyUI"]) == "undefined") ? false : settings["useTouchFriendlyUI"];
     var visualizerGeometry = {
       width: 250,
       height: 142
@@ -298,10 +299,23 @@ if (!window['$']) {
 
     var rootAppURL = org.gigapan.Util.getRootAppURL();
 
+    // Touch support
+    var hasTouchSupport = UTIL.isTouchDevice();
+    var tapped = false;
+    var pinching = false;
+    var previousTouches = [];
+    var lastDist = -1;
+    var pinchPoint = null;
+    var draggingSlider = false;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Public methods
     //
+    this.useTouchFriendlyUI = function() {
+      return useTouchFriendlyUI;
+    };
+
     this.getHomeView = function() {
       return homeView;
     };
@@ -713,24 +727,120 @@ if (!window['$']) {
       }
     };
 
-    var handleMousescrollEvent = function(event, delta) {
-      event.preventDefault();
-      //UTIL.log('mousescroll delta  ' + delta);
-      if (event.shiftKey) {
-        if (delta > 0) {
-          zoomAbout(1 / 0.99, event.pageX, event.pageY);
-        } else if (delta < 0) {
-          zoomAbout(0.99, event.pageX, event.pageY);
-        }
+    var handleMousescrollEvent = function(event, delta, deltaX, deltaY, fromTouch) {
+      var magnitude;
+      if (fromTouch) {
+        magnitude = delta / 100;
       } else {
+        // Default values when using the mouse scrollwheel.
+        // Using the shift key while scrolling allow for more precise movement.
         if (delta > 0) {
-          zoomAbout(1 / 0.9, event.pageX, event.pageY);
+          magnitude = (event.shiftKey) ? 0.01 : 0.1;
         } else if (delta < 0) {
-          zoomAbout(0.9, event.pageX, event.pageY);
+          magnitude = (event.shiftKey) ? -0.01 : -0.1;
         }
+        event.preventDefault();
       }
+      zoomAbout(1 + magnitude, event.pageX, event.pageY);
     };
     this.handleMousescrollEvent = handleMousescrollEvent;
+
+
+    // Map touch events to mouse events.
+    var touch2Mouse = function(e) {
+      var theTouch = e.changedTouches[0];
+      var mouseEvent;
+      var count = 0;
+
+      if (e.type == "touchend") {
+        pinchPoint = null;
+        pinching = false;
+        lastDist = -1;
+      }
+
+      switch (e.type) {
+        case "touchstart":
+          mouseEvent = "mousedown";
+          break;
+        case "touchend":
+          mouseEvent = "mouseup";
+          break;
+        case "touchcancel":
+          mouseEvent = "mouseup";
+          break;
+        case "touchmove":
+          mouseEvent = "mousemove";
+          break;
+        default:
+          return;
+      }
+
+      // TODO: No more than 2 fingers currently supported.
+      if (e.touches.length > 2) return;
+
+      if (e.type == "touchmove" && e.touches.length == 2) {
+        for (var i = 0; i < e.touches.length; i++) {
+          if (Math.floor(e.touches[i].pageX) == Math.floor(previousTouches[i].pageX) && Math.floor(e.touches[i].pageY) == Math.floor(previousTouches[i].pageY)) {
+            count++;
+          }
+        }
+        previousTouches = e.touches;
+        // We have not moved our fingers.
+        if (count == e.touches.length) {
+          e.preventDefault();
+          return;
+        }
+      }
+
+      if (e.type == "touchmove" && pinching && e.touches.length == 2) {
+        if (pinchPoint == null) {
+          pinchPoint = {
+            "pageX": ((e.touches[0].pageX + e.touches[1].pageX) / 2),
+            "pageY": ((e.touches[0].pageY + e.touches[1].pageY) / 2)
+          };
+        }
+
+        if (lastDist != -1) {
+          var dist = Math.abs(Math.sqrt((e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) + (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY)));
+          var magnitude = dist - lastDist;
+          if (Math.abs(magnitude) > 0.8)
+            timelapse.handleMousescrollEvent(pinchPoint, magnitude, null, null, true);
+        }
+        lastDist = dist;
+        e.preventDefault();
+        return;
+      }
+
+      // If we are pinching, do not tigger normal mouse events below, since they were already handled above.
+      if (pinching) {
+        e.preventDefault();
+        return;
+      }
+
+      var theMouse = document.createEvent("MouseEvent");
+      theMouse.initMouseEvent(mouseEvent, true, true, window, 1, theTouch.screenX, theTouch.screenY, theTouch.clientX, theTouch.clientY, false, false, false, false, 0, null);
+      theTouch.target.dispatchEvent(theMouse);
+
+      e.preventDefault();
+    };
+
+    // Add horizontal scroll touch support to an HTML element.
+    var touchHorizontalScroll = function(elem) {
+      var scrollStartPos = 0;
+      $(elem).on("touchstart", function(e) {
+        scrollStartPos = this.scrollLeft + e.originalEvent.touches[0].pageX;
+        e.preventDefault();
+      }).on("touchmove", function(e) {
+        var newPos = scrollStartPos - e.originalEvent.touches[0].pageX;
+        draggingSlider = true;
+        this.scrollLeft = newPos;
+        e.preventDefault();
+      }).on("touchend touchcancel", function(e) {
+        draggingSlider = false;
+      });
+    };
+    this.touchHorizontalScroll = touchHorizontalScroll;
+
 
     var _warpTo = function(newView, broadcast) {
       setTargetView(newView, null, broadcast);
@@ -1584,51 +1694,43 @@ if (!window['$']) {
       }
       return null;
     };
-    var onmove = function(event) {
 
-      if (event.touches.length == 1) {
-        //if (videoset.isStalled()) return;
-        // This is for the tile content holder
-        if (lastEvent) {
-          if (event.shiftKey && false) {
-            targetView.x += (lastEvent.touches[0].pageX - event.touches[0].pageX) * 0.2 / view.scale;
-            targetView.y += (lastEvent.touches[0].pageY - event.touches[0].pageY) * 0.2 / view.scale;
-          } else {
-            targetView.x += (lastEvent.touches[0].pageX - event.touches[0].pageX) / view.scale;
-            targetView.y += (lastEvent.touches[0].pageY - event.touches[0].pageY) / view.scale;
-          }
-        }
-        setTargetView(targetView, null, mouseIsDown);
-        lastEvent = event;
-      }
-      return false;
-    };
-    var mouseIsDown = false;
-    var lastEvent = null;
     var handleMousedownEvent = function(event) {
-      if ((event.which != 1 && event.type != "touchstart") || (annotator && (event.metaKey || event.ctrlKey || event.altKey || annotator.getCanMoveAnnotation())))
+      if (event.which != 1 || (annotator && (event.metaKey || event.ctrlKey || event.altKey || annotator.getCanMoveAnnotation())))
         return;
+      var mouseIsDown = true;
+      var lastEvent = event;
       var saveMouseMove = document.onmousemove;
       var saveMouseUp = document.onmouseup;
       $(videoDiv).removeClass("openHand closedHand").addClass('closedHand');
       stopParabolicMotion();
-      mouseIsDown = true;
-      //document.ontouchmove = document.onmousemove = 
-
+      document.onmousemove = function(event) {
+        if (mouseIsDown) {
+          //if (videoset.isStalled()) return;
+          // This is for the tile content holder
+          if (event.shiftKey) {
+            targetView.x += (lastEvent.pageX - event.pageX) * 0.2 / view.scale;
+            targetView.y += (lastEvent.pageY - event.pageY) * 0.2 / view.scale;
+          } else {
+            targetView.x += (lastEvent.pageX - event.pageX) / view.scale;
+            targetView.y += (lastEvent.pageY - event.pageY) / view.scale;
+          }
+          setTargetView(targetView);
+          lastEvent = event;
+        }
+        return false;
+      };
       // Make sure we release mousedown upon exiting our viewport if we are inside an iframe
-      $("body").one("mouseleave touchleave", function(event) {
+      $("body").one("mouseleave", function(event) {
         if (window && (window.self !== window.top)) {
           mouseIsDown = false;
           $(videoDiv).removeClass("openHand closedHand");
-          //document.removeEventListener("touchmove", onmove);
-          lastEvent = null;
           document.onmousemove = saveMouseMove;
           document.onmouseup = saveMouseUp;
         }
       });
       // Release mousedown upon mouseup
-      $(document).one("mouseup touchend", function(event) {
-        lastEvent = null;
+      $(document).one("mouseup", function(event) {
         mouseIsDown = false;
         $(videoDiv).removeClass("openHand closedHand");
         document.onmousemove = saveMouseMove;
@@ -1637,7 +1739,7 @@ if (!window['$']) {
       return false;
     };
     this.handleMousedownEvent = handleMousedownEvent;
-    document.addEventListener("touchmove", onmove);
+
     var zoomAbout = function(zoom, x, y, isFromGoogleMap) {
       //if (videoset.isStalled()) return;
       var newScale = limitScale(targetView.scale * zoom);
@@ -1653,7 +1755,7 @@ if (!window['$']) {
     this.zoomAbout = zoomAbout;
 
     var handleDoubleClickEvent = function(event, isFromGoogleMap) {
-      zoomAbout(2.0, event.touches[0].pageX, event.touches[0].pageY, isFromGoogleMap);
+      zoomAbout(2.0, event.pageX, event.pageY, isFromGoogleMap);
     };
 
     var limitScale = function(scale) {
@@ -2808,12 +2910,50 @@ if (!window['$']) {
       }
 
       // Setup viewport event handlers.
-      //videoDivId['onmousedown'] = handleMousedownEvent;
-      videoDiv.addEventListener("touchstart", handleMousedownEvent);
-
+      videoDiv['onmousedown'] = handleMousedownEvent;
       videoDiv['ondblclick'] = handleDoubleClickEvent;
 
       $(videoDiv).mousewheel(thisObj.handleMousescrollEvent);
+
+      if (hasTouchSupport) {
+        document.addEventListener("touchstart", touch2Mouse, true);
+        document.addEventListener("touchmove", touch2Mouse, true);
+        document.addEventListener("touchend", touch2Mouse, true);
+        document.addEventListener("touchcancel", touch2Mouse, true);
+        $("#" + timeMachineDivId).on("touchstart", function(e) {
+          previousTouches = e.originalEvent.touches;
+          if (tapped && e.originalEvent.touches.length == 2) {
+            pinching = true;
+            clearTimeout(tapped); //stop single tap callback
+            tapped = null;
+            e.preventDefault();
+            return;
+          }
+
+          var theTouch = e.originalEvent.changedTouches[0];
+
+          if (!tapped) { //if tap is not set, set up single tap
+            tapped = setTimeout(function() {
+              if (draggingSlider) {
+                clearTimeout(tapped); //stop single tap callback
+                tapped = null;
+                return;
+              }
+              tapped = null;
+              var mouseEvent = document.createEvent("MouseEvent");
+              mouseEvent.initMouseEvent('click', true, true, window, 1, theTouch.screenX, theTouch.screenY, theTouch.clientX, theTouch.clientY, false, false, false, false, 0, null);
+              theTouch.target.dispatchEvent(mouseEvent);
+            }, 350); // wait 300ms then run single click code
+          } else { // we consider a double tap to be tap within 300ms of last tap.
+            clearTimeout(tapped); // stop single tap callback
+            tapped = null;
+            var mouseEvent = document.createEvent("MouseEvent");
+            mouseEvent.initMouseEvent('dblclick', true, true, window, 1, theTouch.screenX, theTouch.screenY, theTouch.clientX, theTouch.clientY, false, false, false, false, 0, null);
+            theTouch.target.dispatchEvent(mouseEvent);
+          }
+          e.preventDefault();
+        });
+      }
 
       $viewerDiv.one("click", function() {
         $(document).on("keydown.tm_keydown", handleKeydownEvent);

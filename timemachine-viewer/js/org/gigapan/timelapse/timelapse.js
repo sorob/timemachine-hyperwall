@@ -307,7 +307,7 @@ if (!window['$']) {
     var lastDist = -1;
     var pinchPoint = null;
     var draggingSlider = false;
-
+    var isUserIntreracting = false;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // Public methods
@@ -748,6 +748,7 @@ if (!window['$']) {
 
     // Map touch events to mouse events.
     var touch2Mouse = function(e) {
+      isUserIntreracting = e.touches.length>0;
       var theTouch = e.changedTouches[0];
       var mouseEvent;
       var count = 0;
@@ -1025,7 +1026,7 @@ if (!window['$']) {
         // If we are really close to our current location, just slide there rather than do a very short parabolic curve.
         if (newView.scale && newView.scale.toFixed(17) == view.scale.toFixed(17) && (Math.abs(newView.x - view.x) <= 1000 && Math.abs(newView.y - view.y) <= 1000)) {
           _addViewEndChangeListener(defaultEndViewCallback);
-          setTargetView(newView);
+          setTargetView(newView, null , isUserIntreracting);
         } else {
           if (!parabolicMotionController) {
             parabolicMotionController = new parabolicMotionObj.MotionController({
@@ -1413,7 +1414,7 @@ if (!window['$']) {
 
     this.setScale = function(val) {
       targetView.scale = val;
-      setTargetView(targetView);
+      setTargetView(targetView, null, isUserIntreracting);
     };
 
     this.setScaleFromSlider = function(val) {
@@ -1698,7 +1699,7 @@ if (!window['$']) {
     var handleMousedownEvent = function(event) {
       if (event.which != 1 || (annotator && (event.metaKey || event.ctrlKey || event.altKey || annotator.getCanMoveAnnotation())))
         return;
-      var mouseIsDown = true;
+      var mouseIsDown = isUserIntreracting = true;
       var lastEvent = event;
       var saveMouseMove = document.onmousemove;
       var saveMouseUp = document.onmouseup;
@@ -1715,7 +1716,7 @@ if (!window['$']) {
             targetView.x += (lastEvent.pageX - event.pageX) / view.scale;
             targetView.y += (lastEvent.pageY - event.pageY) / view.scale;
           }
-          setTargetView(targetView);
+          setTargetView(targetView, null, isUserIntreracting);
           lastEvent = event;
         }
         return false;
@@ -1723,7 +1724,7 @@ if (!window['$']) {
       // Make sure we release mousedown upon exiting our viewport if we are inside an iframe
       $("body").one("mouseleave", function(event) {
         if (window && (window.self !== window.top)) {
-          mouseIsDown = false;
+          mouseIsDown = isUserIntreracting = false;
           $(videoDiv).removeClass("openHand closedHand");
           document.onmousemove = saveMouseMove;
           document.onmouseup = saveMouseUp;
@@ -1731,7 +1732,7 @@ if (!window['$']) {
       });
       // Release mousedown upon mouseup
       $(document).one("mouseup", function(event) {
-        mouseIsDown = false;
+        mouseIsDown = isUserIntreracting = false;
         $(videoDiv).removeClass("openHand closedHand");
         document.onmousemove = saveMouseMove;
         document.onmouseup = saveMouseUp;
@@ -1750,7 +1751,7 @@ if (!window['$']) {
         targetView.y += 1 * (1 - 1 / actualZoom) * (y - $(videoDiv).offset().top - viewportHeight * 0.5) / targetView.scale;
       }
       targetView.scale = newScale;
-      setTargetView(targetView);
+      setTargetView(targetView, null, isUserIntreracting);
     };
     this.zoomAbout = zoomAbout;
 
@@ -2922,6 +2923,7 @@ if (!window['$']) {
         document.addEventListener("touchcancel", touch2Mouse, true);
         $("#" + timeMachineDivId).on("touchstart", function(e) {
           previousTouches = e.originalEvent.touches;
+          isUserIntreracting = e.originalEvent.touchend.length>0;
           if (tapped && e.originalEvent.touches.length == 2) {
             pinching = true;
             clearTimeout(tapped); //stop single tap callback

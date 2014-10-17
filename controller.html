@@ -321,7 +321,7 @@
     </style>
 
     <script>
-      var controller;
+      var controller, viewsync;
       var tourContainerWidth;
       var isMobile = navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile/i);
       var mode = "player";
@@ -462,9 +462,12 @@
         if (desiredCenterView) {
           // Set the location of android object
           var viewObj = JSON.parse(desiredCenterView);
+
           var viewForAndroid = viewObj.center.lat + ',' + viewObj.center.lng + ',' + viewObj.zoom;
+          var viewForWeb = {bbox:{x:viewObj.center.lat ,y: viewObj.center.lng ,scale:viewObj.zoom}};
           try {
-            androidObject.setMapLocation(viewForAndroid);
+            viewsync.emit("masterview", viewForWeb);
+           // androidObject.setMapLocation(viewForAndroid);
           } catch(err) {
             console.log("androidObject is undefined in function setLocation(). Reference error!");
           }
@@ -1051,7 +1054,8 @@
       };
 
       function init() {
-        controller = io.connect('http://172.16.11.161:5000');
+        controller = io.connect('/controller');
+        viewsync = io.connect('/viewsync');
         controller.on('connect', function() {
           controller.emit("registerControllerOnServer");
         }).on('disconnect', function() {

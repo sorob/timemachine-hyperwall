@@ -2923,7 +2923,7 @@ if (!window['$']) {
         document.addEventListener("touchcancel", touch2Mouse, true);
         $("#" + timeMachineDivId).on("touchstart", function(e) {
           previousTouches = e.originalEvent.touches;
-          isUserIntreracting = e.originalEvent.touchend.length>0;
+          isUserIntreracting = e.originalEvent.touches.length>0;
           if (tapped && e.originalEvent.touches.length == 2) {
             pinching = true;
             clearTimeout(tapped); //stop single tap callback

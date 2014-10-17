@@ -1051,7 +1051,7 @@
       };
 
       function init() {
-        controller = io.connect('/controller');
+        controller = io.connect('http://172.16.11.161:5000');
         controller.on('connect', function() {
           controller.emit("registerControllerOnServer");
         }).on('disconnect', function() {

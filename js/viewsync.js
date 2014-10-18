@@ -147,7 +147,6 @@ function viewsync_init() {
           "view": view,
           "id": id
         });
-        console.log(view)
       }
 
 

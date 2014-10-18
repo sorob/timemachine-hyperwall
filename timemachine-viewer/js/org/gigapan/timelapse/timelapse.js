@@ -1033,7 +1033,7 @@ if (!window['$']) {
               animationFPS: 1000 / animateRate,
               pathSpeed: parabolicMotionPathSpeed,
               animateCallback: function(pt) {
-                _warpTo(parabolicMotionObj.pixelPointToView(viewportWidth, viewportHeight, pt));
+                _warpTo(parabolicMotionObj.pixelPointToView(viewportWidth, viewportHeight, pt), true);
               },
               onCompleteCallback: defaultEndViewCallback
             });

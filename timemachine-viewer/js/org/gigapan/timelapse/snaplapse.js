@@ -340,6 +340,7 @@ if (!Math.uuid) {
 
         // Events should be fired at the end of this function
         var listeners = eventListeners['keyframe-modified'];
+        console.log("keyframe-modified")
         if (listeners) {
           for (var i = 0; i < listeners.length; i++) {
             try {
@@ -846,6 +847,8 @@ if (!Math.uuid) {
             startTimeCounterInterval();
 
             var listeners = eventListeners['play'];
+            console.log("play")
+
             if (listeners) {
               for (var i = 0; i < listeners.length; i++) {
                 try {
@@ -979,6 +982,8 @@ if (!Math.uuid) {
 
       // Notify listeners
       var listeners = eventListeners['keyframe-interval-change'];
+        console.log("keyframe-change")
+
       if (listeners) {
         for (var i = 0; i < listeners.length; i++) {
           try {

@@ -1073,6 +1073,8 @@ if (!org.gigapan.timelapse.snaplapse) {
                   }
                 }
                 var listeners = eventListeners["snaplapse-loaded"];
+        console.log("snaplapse-loaded")
+                
                 if (listeners) {
                   for (var i = 0; i < listeners.length; i++)
                     listeners[i](keyframes.length);

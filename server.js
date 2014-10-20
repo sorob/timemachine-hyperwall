@@ -4,7 +4,7 @@
 var path = require('path');
 
 // additional console output
-var DEBUG = true;
+var DEBUG = false;
 // listen on this port for all http, socket.io, and multi-axis requests
 var viewsyncPort = 8080;
 // serve http from this path

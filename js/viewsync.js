@@ -10,7 +10,7 @@ var screensRight = (fields.screensRight) ? fields.screensRight : 0;
 var screensUp = (fields.screensUp) ? fields.screensUp : 0;
 var screensDown = (fields.screensDown) ? fields.screensDown : 0;
 var hyperwallGroup = (fields.group) ? fields.group : 0;
-var viewsync = io.connect('/viewsync' + hyperwallGroup);
+var viewsync = io.connect('/viewsync');
 var masterView;
 var id = yawOffset + "_" + pitchOffset;
 
@@ -75,7 +75,7 @@ function viewsync_init() {
       if (fields.showMap || fields.showControls)
         timelapse.updateLocationContextUI();
       if (broadcast) {
-        viewsync.emit('view', {
+        viewsync.emit('view' + hyperwallGroup, {
           "bbox": bbox,
           "view": view,
           "id": id
@@ -85,7 +85,7 @@ function viewsync_init() {
 
     });
 
-    viewsync.on('sync masterview', function(data) {
+    viewsync.on('sync masterview' +hyperwallGroup, function(data) {
       if (data.id == id)
         return;
 
@@ -106,7 +106,7 @@ function viewsync_init() {
       timelapse.warpToBoundingBox(bbox, false);
       if (data.id != id) {
         //"telling everyone else"
-        viewsync.emit('view', data);
+        viewsync.emit('view' +hyperwallGroup, data);
       }
     });
 
@@ -115,14 +115,14 @@ function viewsync_init() {
     });
 
     timelapse.addVideoPlayListener(function() {
-      viewsync.emit('play', {
+      viewsync.emit('play' + hyperwallGroup, {
         play: true
       });
       viewsync_send_time(true);
     });
 
     timelapse.addVideoPauseListener(function() {
-      viewsync.emit('play', {
+      viewsync.emit('play' + hyperwallGroup, {
         play: false
       });
       viewsync_send_time(true);
@@ -143,7 +143,7 @@ function viewsync_init() {
       if (fields.showMap || fields.showControls)
         timelapse.updateLocationContextUI();
       if (broadcast) {
-        viewsync.emit('masterview', {
+        viewsync.emit('masterview' + hyperwallGroup, {
           "bbox": bbox,
           "view": view,
           "id": id
@@ -153,7 +153,7 @@ function viewsync_init() {
 
     });
 
-    viewsync.on('sync view', function(data) {
+    viewsync.on('sync view' + hyperwallGroup, function(data) {
       if (data.id == id)
         return;
 
@@ -174,11 +174,11 @@ function viewsync_init() {
       timelapse.warpToBoundingBox(bbox, false);
     });
 
-    viewsync.on('sync time', function(data) {
+    viewsync.on('sync time' + hyperwallGroup, function(data) {
       timelapse.seek(data.time);
     });
 
-    viewsync.on('sync play', function(data) {
+    viewsync.on('sync play' + hyperwallGroup, function(data) {
       if (data.play)
         timelapse.play();
       else
@@ -215,7 +215,7 @@ function viewsync_init() {
 
 function viewsync_send_time(absolute) {
   var t = timelapse.getCurrentTime();
-  viewsync.emit('time', {
+  viewsync.emit('time' + hyperwallGroup, {
     time: t,
     absolute: absolute
   });

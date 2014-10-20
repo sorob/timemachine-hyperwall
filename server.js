@@ -4,7 +4,7 @@
 var path = require('path');
 
 // additional console output
-var DEBUG = false;
+var DEBUG = true;
 // listen on this port for all http, socket.io, and multi-axis requests
 var viewsyncPort = 8080;
 // serve http from this path
@@ -51,19 +51,24 @@ function bounce(socket, sig, source) {
       console.log('from ' + source + ' bouncing ' + sig + " " + JSON.stringify(data));
     state[sig] = data;
     // save the last packet broadcast
+    //set sync for all 20 groups!
+
     syncAll(socket, sig, data);
   });
 }
 
 var viewsync = io.of('/viewsync').on('connection', function(socket) {
   // send the last known state to the client on connection
-  for (var sig in state ) {
+  for (var sig in state) {
     //syncSingle( socket, sig, state[sig] );
   }
-  bounce(socket, 'view', 'viewsync');
-  bounce(socket, 'time', 'viewsync');
-  bounce(socket, 'play', 'viewsync');
-  bounce(socket, 'masterview', 'viewsync');
+  for (var i = 0; i < 20; i++) {
+
+    bounce(socket, 'view'+i, 'viewsync');
+    bounce(socket, 'time'+i, 'viewsync');
+    bounce(socket, 'play'+i, 'viewsync');
+    bounce(socket, 'masterview'+i, 'viewsync');
+  }
 });
 
 //
@@ -130,7 +135,7 @@ var navstate = function MultiAxisState() {
     var type = Number(data[0]);
     var axis = Number(data[1]);
     var value = Number(data[2]);
-    switch( type ) {
+    switch (type) {
       case EV_REL:
       case EV_ABS:
         abs[axis] = value;

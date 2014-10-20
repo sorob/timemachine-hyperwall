@@ -7,6 +7,35 @@ body, html {
   background: transparent;
 }
 
+::-webkit-scrollbar {
+    width: 2px !important;
+    height: 2px !important;
+
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important; 
+    -webkit-border-radius: 10px !important;
+    border-radius: 10px !important;
+    display: none;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px !important;
+    border-radius: 10px !important;
+    background: rgba(0,0,0,0.5) !important; 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5) !important; 
+    width: 20px;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(0,0,0,0.4) !important; 
+}
+::-webkit-scrollbar-button {
+    display: none !important;
+}
+
 .ui-dialog {
   box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
 }
@@ -658,4 +687,20 @@ body, html {
   background-size: contain !important;
   opacity: .55;
   background-repeat: no-repeat;
+}
+.player{
+  bottom: 0px !important;
+}
+.presentationSlider{
+  position: static !important;
+  top : initial !important;
+}
+.snaplapse_keyframe_container{
+  top:inherit !important;
+  bottom: 0px !important;
+  margin: 10px !important; 
+  background-color: transparent !important;
+}
+.customControl{
+  bottom: 100px !important;
 }

@@ -9,7 +9,8 @@ var screensLeft = (fields.screensLeft) ? fields.screensLeft : 0;
 var screensRight = (fields.screensRight) ? fields.screensRight : 0;
 var screensUp = (fields.screensUp) ? fields.screensUp : 0;
 var screensDown = (fields.screensDown) ? fields.screensDown : 0;
-var viewsync = io.connect('/viewsync');
+var hyperwallGroup = (fields.group) ? fields.group : 0;
+var viewsync = io.connect('/viewsync' + hyperwallGroup);
 var masterView;
 var id = yawOffset + "_" + pitchOffset;
 
@@ -192,7 +193,7 @@ function viewsync_init() {
 
   var colors = ["#008744", "#0057e7", "#d62d20", "#ffa700", "#eeeeee"];
   var color = colors[p % 5];
-  var style = "3px solid " + color;
+  var style = "10px solid " + color;
   var tiledContentHolder = $(".tiledContentHolder");
   switch (parseInt(yawOffset)) {
     case 0:
@@ -200,7 +201,7 @@ function viewsync_init() {
       break;
     case 1:
       tiledContentHolder.css("border-right", style)
-      break ;
+      break;
   }
   switch (parseInt(pitchOffset)) {
     case 0:

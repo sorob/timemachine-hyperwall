@@ -191,8 +191,8 @@ function viewsync_init() {
    ;
   
 
-  var colors = ["#008744", "#0057e7", "#d62d20", "#ffa700", "#eeeeee"];
-  var color = colors[hyperwallGroup % 5];
+  var colors = ["#008744", "#0057e7", "#d62d20", "#ffa700"];
+  var color = colors[hyperwallGroup % 4];
   var style = "10px solid " + color;
   var tiledContentHolder = $(".tiledContentHolder");
   switch (parseInt(yawOffset)) {

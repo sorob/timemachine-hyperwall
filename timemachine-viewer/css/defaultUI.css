@@ -490,7 +490,10 @@ body, html {
   left: 20px;
   z-index: 15;
 }
-
+.zoom {
+  /*just for the event*/
+  display: none; 
+}
 .zoom .ui-button {
   display: block;
   width: 20px;

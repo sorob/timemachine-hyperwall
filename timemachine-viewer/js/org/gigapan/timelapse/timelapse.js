@@ -1577,6 +1577,7 @@ if (!window['$']) {
         view = $.extend({}, homeView);
       }
       _warpTo(view);
+
     };
 
     var _computeMotion = function(start, end, timeRatio) {
@@ -1697,6 +1698,13 @@ if (!window['$']) {
     };
 
     var handleMousedownEvent = function(event) {
+      
+      var right_click = (event.which ? (event.which == 3) : (event.button == 2));
+
+      if (right_click)
+      {
+          return false;
+      }
       if (event.which != 1 || (annotator && (event.metaKey || event.ctrlKey || event.altKey || annotator.getCanMoveAnnotation())))
         return;
       var mouseIsDown = isUserIntreracting = true;
@@ -2237,7 +2245,7 @@ if (!window['$']) {
 
     // Update the scale bar and the context map
     // Need to call this when changing the view
-    var updateLocationContextUI = function() {
+    var updateLocationContextUI = function(masterView) {
       if (!defaultUI)
         return null;
       if (scaleBar == undefined && smallGoogleMap == undefined && defaultUI.getMode() == "player")
@@ -2913,8 +2921,8 @@ if (!window['$']) {
       // Setup viewport event handlers.
       videoDiv['onmousedown'] = handleMousedownEvent;
       videoDiv['ondblclick'] = handleDoubleClickEvent;
-
-      $(videoDiv).mousewheel(thisObj.handleMousescrollEvent);
+      
+      //$(videoDiv).mousewheel(thisObj.handleMousescrollEvent);
 
       if (hasTouchSupport) {
         document.addEventListener("touchstart", touch2Mouse, true);

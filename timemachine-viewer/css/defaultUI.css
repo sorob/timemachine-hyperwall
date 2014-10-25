@@ -8,8 +8,8 @@ body, html {
 }
 
 ::-webkit-scrollbar {
-    width: 2px !important;
-    height: 2px !important;
+    width: 12px !important;
+    height: 12px !important;
 
 }
  
@@ -25,6 +25,7 @@ body, html {
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px !important;
     border-radius: 10px !important;
+    border-color: #4d90fe;
     background: rgba(0,0,0,0.5) !important; 
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5) !important; 
     width: 20px;
@@ -705,5 +706,5 @@ body, html {
   background-color: transparent !important;
 }
 .customControl{
-  bottom: 100px !important;
+  bottom: 135px !important;
 }

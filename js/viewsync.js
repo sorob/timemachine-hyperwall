@@ -36,14 +36,14 @@ function viewsync_init() {
   console.log('master of the universe');
   // wait for the timelapse to be ready, there must be a better way!
   var metadata = timelapse.getMetadata();
-  masterView = timelapse.getView();
-  var view = timelapse.getView();
+  //var view = timelapse.getView();
   // correct scale extents before checking x/ymax
-  masterView = view;
+ // masterView = view;
 
   if (fields.master) {
+    //masterView = timelapse.getView();
     timelapse.addViewChangeListener(function(e, broadcast) {
-
+      var view = timelapse.getView();
       var bbox = timelapse.getBoundingBoxForCurrentView();
       var xmax = timelapse.getPanoWidth();
       var xmin = 0;
@@ -71,9 +71,9 @@ function viewsync_init() {
         bbox = timelapse.getBoundingBoxForCurrentView();
       }
 
-
+     // var masterView = view;
       if (fields.showMap || fields.showControls)
-        timelapse.updateLocationContextUI();
+        timelapse.updateLocationContextUI(view);
       if (broadcast) {
         viewsync.emit('view' + hyperwallGroup, {
           "bbox": bbox,
